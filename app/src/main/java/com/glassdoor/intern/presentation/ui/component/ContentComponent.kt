@@ -69,9 +69,6 @@ internal fun ContentComponent(
         contentPadding = PaddingValues(InternTheme.dimensions.double),
         verticalArrangement = Arrangement.spacedBy(InternTheme.dimensions.double),
     ) {
-        /**
-         * TODO: Specify the [item key](https://developer.android.com/jetpack/compose/lists#item-keys) and [content type](https://developer.android.com/jetpack/compose/lists#content-type)
-         */
         items(
             items = items,
             key = { it.key },
@@ -79,7 +76,6 @@ internal fun ContentComponent(
             itemContent = { item -> ItemComponent(item) },
         )
     }
-    Log.d("ContentComponent", "Header: $header, Items: $items")
 }
 
 
@@ -102,10 +98,12 @@ private fun HeaderComponent(
     ) {
         with(header) {
             Column(modifier = Modifier.padding(InternTheme.dimensions.normal)) {
-                Text(
-                    text = items.firstOrNull()?.title ?: "Title",
-                    style = MaterialTheme.typography.titleLarge
-                )
+                header.title?.let {
+                    Text(
+                        text = it,
+                        style = MaterialTheme.typography.titleLarge
+                    )
+                }
             }
         }
     }

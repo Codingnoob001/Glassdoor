@@ -24,18 +24,23 @@ internal class InfoRepositoryImpl @Inject constructor(
     private val infoApi: InfoApi,
     private val headerInfoMapper: HeaderInfoMapper
 ) : InfoRepository {
+    private var lastSuccessfulHeaderInfo: HeaderInfo? = null
 
     override suspend fun getHeaderInfo(): Result<HeaderInfo, Throwable> =
         try {
             with(infoApi.getInfo()) {
                 when {
-                    header != null -> Ok(headerInfoMapper.toDomain(header, items))
+                    header != null -> {
+                        val result = headerInfoMapper.toDomain(header, items)
+                        lastSuccessfulHeaderInfo = result
+                        Ok(result)
+                    }
                     error != null -> Err(Throwable(error))
                     else -> Err(Throwable("unexpected error occurred"))
                 }
             }
         } catch (throwable: Throwable) {
             Timber.e(throwable, "InfoRepositoryImpl")
-            Err(throwable)
+            lastSuccessfulHeaderInfo?.let { Ok(it) } ?: Err(throwable)
         }
 }

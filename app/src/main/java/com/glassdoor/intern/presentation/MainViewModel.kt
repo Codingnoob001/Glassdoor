@@ -71,8 +71,6 @@ internal class MainViewModel @Inject constructor(
 
         emit(HideLoadingState)
 
-        emit(UpdateItemsState(emptyList()))
-
         emit(UpdateErrorMessageState(errorMessage = throwable.message))
     }
 
@@ -91,7 +89,6 @@ internal class MainViewModel @Inject constructor(
         is UpdateErrorMessageState -> with(partialState) {
             previousUiState.copy(
                 errorMessage = errorMessage,
-                items = if (errorMessage.isNullOrEmpty()) previousUiState.items else emptyList(),
             )
         }
 
